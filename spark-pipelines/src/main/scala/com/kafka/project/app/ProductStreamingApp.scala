@@ -43,7 +43,7 @@ object ProductStreamingApp {
       .option("es.nodes", "localhost")
       .option("es.port", 9200)
       .option("es.nodes.wan.only", "true")
-      .option("es.mapping.id", "id") //👈 IMPORTANT (upsert)
+      .option("es.mapping.id", "id") // IMPORTANT (upsert)
       .start("product-index")
 
     query.awaitTermination()
