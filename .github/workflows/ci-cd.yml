@@ -31,8 +31,13 @@ jobs:
         working-directory: search-service
 
       # 4 Run tests
-      - name: Run Tests
+      - name: Run Tests spark pipelines
         run: mvn test
+        working-directory: spark-pipelines
+
+      - name: Run Tests Search Service API
+        run: mvn test
+        working-directory: search-service
 
       # 5 Upload JAR (optional but good)
       - name: Upload JAR
