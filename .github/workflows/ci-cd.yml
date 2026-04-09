@@ -22,13 +22,13 @@ jobs:
           java-version: '17'
 
       # 3 Build project
-      - name: Build Spark Module
+      - name: Build Spark Pipelines Module
         run: mvn clean install
         working-directory: spark-pipelines
 
-      - name: Build API Module
+      - name: Build Search Service API Module
         run: mvn clean install
-        working-directory: search-api
+        working-directory: search-service
 
       # 4 Run tests
       - name: Run Tests
