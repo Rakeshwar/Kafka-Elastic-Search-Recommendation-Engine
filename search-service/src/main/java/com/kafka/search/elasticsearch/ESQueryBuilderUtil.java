@@ -2,6 +2,7 @@ package com.kafka.search.elasticsearch;
 
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.json.JsonData;
+import com.kafka.search.model.Product;
 import com.kafka.search.model.ProductSearchCriteria;
 
 import java.util.ArrayList;
@@ -84,5 +85,60 @@ public class ESQueryBuilderUtil {
     }
 
 
-    //product recommendation
+    //product recommendation query builder
+
+    public static Query getRecommendationQuery(Product product){
+        List<Query> mustSimilarQueries = createSimilarProductQueryForRecommendation(product);
+        List<Query> filterQueries = createFilterQueriesForRecommendation(product);
+        List<Query> mustExcludeQueries = createExcludeProductQuery(product);
+
+        return Query.of(q ->
+                q.bool(b ->
+                        b.must(mustSimilarQueries) // for similar content
+                                .filter(filterQueries) // apply some filter
+                                .mustNot(mustExcludeQueries) // exclude the same product as requested
+                ));
+    }
+
+    private static List<Query> createSimilarProductQueryForRecommendation(Product product){
+        List<Query> mustSimilarQueries = new ArrayList<>();
+
+        //moreLikeThis search for similar product
+        Query query =  Query.of(q -> q.moreLikeThis(
+                mlt -> mlt
+                        .fields("name", "description")
+                        .like(l -> l.text(product.name))
+                        .minTermFreq(1)
+                        .maxQueryTerms(12)
+        ));
+
+        mustSimilarQueries.add(query);
+
+        return mustSimilarQueries;
+    }
+
+    private static List<Query> createFilterQueriesForRecommendation(Product product){
+        List<Query> filterQueries = new ArrayList<>();
+
+        // Same category
+        Query query = Query.of(f -> f.term(
+                t -> t.field("category.keyword")
+                        .value(product.category)
+        ));
+
+        filterQueries.add(query);
+        return filterQueries;
+    }
+
+    private static List<Query> createExcludeProductQuery(Product product){
+        List<Query> mustExcludeQueries = new ArrayList<>();
+
+        Query query = Query.of(qb ->
+                qb.term(t-> t.field("id").value(product.id)));
+
+        mustExcludeQueries.add(query);
+
+        return mustExcludeQueries;
+    }
+
 }
