@@ -49,3 +49,4 @@ jobs:
       # 6 ADD HERE (IMPORTANT)
       - name: Build Docker Image
         run: docker build -t product-search-app .
+        working-directory: search-service
