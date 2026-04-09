@@ -35,7 +35,7 @@ public class ProductSearchServiceImpl implements ProductSearchService {
 
         SearchResponse<Product> response = client.search(
                s -> s.index("product-index")
-                       .query(ESQueryBuilderUtil.buildProductQuery(new ProductSearchCriteria(query, price, category))),
+                       .query(ESQueryBuilderUtil.buildProductSearchQuery(new ProductSearchCriteria(query, price, category))),
 
                 Product.class
         );
