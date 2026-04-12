@@ -39,13 +39,13 @@ jobs:
         run: mvn test
         working-directory: search-service
 
-      # 5 Upload JAR (optional but good)
+      # 5 Upload JAR 
       - name: Upload JAR
         uses: actions/upload-artifact@v4
         with:
           name: app-jar
           path: target/*.jar
 
-      # 6 ADD HERE (IMPORTANT)
+      # 6 Add docker image build
       - name: Build Docker Image
         run: docker build -t product-search-app .
